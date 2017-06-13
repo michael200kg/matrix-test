@@ -21,7 +21,13 @@ public class MainTest {
         System.out.println("Duration multi thread = "+duration.toMillis());       
     
         System.out.println("Equals = "+MatrixUtil.compare(c, d));
-        
+ 
+    	time = LocalDateTime.now();   	
+    	int[][] e = MatrixUtil.streamMultiply(a, b);
+    	duration = Duration.between(time,LocalDateTime.now());
+        System.out.println("Duration stream = "+duration.toMillis());       
+    
+        System.out.println("Equals = "+MatrixUtil.compare(c, e));       
 /*    	
         for(int i=0;i<a.length;i++) {
         	for(int j=0;j<a.length;j++) {

@@ -2,6 +2,7 @@ package ru.matrix;
 
 import java.util.Random;
 import java.util.concurrent.*;
+import java.util.stream.IntStream;
 
 public class MatrixUtil {
 
@@ -9,6 +10,42 @@ public class MatrixUtil {
         return singleThreadMultiply(matrixA, matrixB);
     }
 
+    public static int[][] streamMultiply(int[][] matrixA, int[][] matrixB) {
+
+
+         final int matrixSize = matrixA.length;
+         final int[][] matrixC = new int[matrixSize][matrixSize];
+         final int[][] matrixBrev = new int[matrixSize][matrixSize];
+
+         for (int r = 0; r < matrixSize; r++) {          
+            for (int k = 0; k < matrixSize; k++) {
+               matrixBrev[k][r] = matrixB[r][k];
+            }
+         }    
+             
+         IntStream.range(0, matrixSize).boxed().parallel().forEach(j->{matrixC[j]=getRow(j,matrixA,matrixBrev);}); 
+
+         return matrixC;
+
+
+     }    
+    
+    public static int[] getRow(int row,int[][] matrixA, int[][] matrixBrev) {
+        
+    	int matrixSize = matrixA.length;
+    	int[] columnret = new int[matrixSize];
+    	for (int r = 0; r < matrixSize; r++) {          
+           int sum = 0;
+           int thisRow[] = matrixA[row];
+           for (int k = 0; k < matrixSize; k++) {
+              sum += thisRow[k] * matrixBrev[r][k];
+           }
+           columnret[r] = sum;
+       }
+    return columnret;
+}    
+    
+    
     public static int[][] multiThreadMultiply(int[][] matrixA, int[][] matrixB) {
 
         ExecutorService executor = Executors.newWorkStealingPool(30);
@@ -18,7 +55,7 @@ public class MatrixUtil {
         final int[][] matrixBrev = new int[matrixSize][matrixSize];
         
         
-        Future<int[]>[] future = new Future[matrixSize];
+       Future<int[]>[] future = new Future[matrixSize];
 
         try {
             for (int r = 0; r < matrixSize; r++) {          
@@ -26,8 +63,8 @@ public class MatrixUtil {
                 	matrixBrev[k][r] = matrixB[r][k];
                 }
             }    
+  
             for (int j = 0; j < matrixSize ; j++) {
-            	//MultiplyCallable m =new MultiplyCallable(matrixB,matrixA,j);
             	future[j] = executor.submit(new MultiplyCallable(matrixA,matrixBrev,j));
             }
 
@@ -36,6 +73,8 @@ public class MatrixUtil {
             for (int j = 0; j < matrixSize ; j++) {
                  matrixC[j] = future[j].get();
             }
+
+            
            
         }
         catch (IndexOutOfBoundsException e)  {
@@ -46,10 +85,10 @@ public class MatrixUtil {
         } 
         catch (ExecutionException e) {
             e.printStackTrace();
-        }        
+        }       
 
 
-        executor.shutdown();
+       executor.shutdown();
 
         return matrixC;
 
@@ -90,6 +129,40 @@ public class MatrixUtil {
     }
 
 
+    public static class MultiplyInStream  {
+
+        private int[][] matrixA;
+        private int[][] matrixBrev;
+        private int row;
+        private int matrixSize;
+
+        private int[] columnret;      
+        
+        public MultiplyInStream(int[][] matrixA, int[][] matrixBrev, int row) {
+            this.matrixA=matrixA;
+            this.matrixSize=matrixA.length;
+            this.row=row;
+            columnret = new int[matrixSize];
+            this.matrixBrev = matrixBrev;
+        
+        }
+
+        public int[] getRow() {
+                for (int r = 0; r < matrixSize; r++) {          
+                   int sum = 0;
+                   int thisRow[] = matrixA[row];
+                   for (int k = 0; k < matrixSize; k++) {
+                      sum += thisRow[k] * matrixBrev[r][k];
+                   }
+                   columnret[r] = sum;
+               }
+            return columnret;
+        }
+    }    
+    
+
+    
+    
     public static int[][] singleThreadMultiply(int[][] matrixA, int[][] matrixB) {
         final int matrixSize = matrixA.length;
         final int[][] matrixC = new int[matrixSize][matrixSize];
