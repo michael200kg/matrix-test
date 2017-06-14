@@ -27,7 +27,14 @@ public class MainTest {
     	duration = Duration.between(time,LocalDateTime.now());
         System.out.println("Duration stream = "+duration.toMillis());       
     
-        System.out.println("Equals = "+MatrixUtil.compare(c, e));       
+        System.out.println("Equals = "+MatrixUtil.compare(c, e));             
+        
+    	time = LocalDateTime.now();   	
+    	int[][] f = MatrixUtil.stream1Multiply(a, b);
+    	duration = Duration.between(time,LocalDateTime.now());
+        System.out.println("Duration stream1 = "+duration.toMillis());       
+    
+        System.out.println("Equals = "+MatrixUtil.compare(c, f));               
 /*    	
         for(int i=0;i<a.length;i++) {
         	for(int j=0;j<a.length;j++) {
@@ -51,6 +58,7 @@ public class MainTest {
         	System.out.println("");
         }
         System.out.println("");
+        
         for(int i=0;i<a.length;i++) {
         	for(int j=0;j<a.length;j++) {
         		System.out.print(d[i][j]+ " ");  

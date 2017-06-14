@@ -1,5 +1,6 @@
 package ru.matrix;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
@@ -10,6 +11,42 @@ public class MatrixUtil {
         return singleThreadMultiply(matrixA, matrixB);
     }
 
+    public static int[][] stream1Multiply(int[][] matrixA, int[][] matrixB) {
+
+
+        final int matrixSize = matrixA.length;
+        int[][] matrixC = new int[matrixSize][matrixSize];
+        final int[][] matrixBrev = new int[matrixSize][matrixSize];
+
+        for (int r = 0; r < matrixSize; r++) {          
+           for (int k = 0; k < matrixSize; k++) {
+              matrixBrev[k][r] = matrixB[r][k];
+           }
+        }    
+            
+        Object[] matrixCtest = Arrays.stream(matrixA).parallel().map(arr->{return getRow(arr,matrixBrev);}).toArray();
+        for(int i=0;i<matrixSize;i++) {
+        	matrixC[i] = (int[])matrixCtest[i];
+        }
+        return matrixC;
+
+
+    }      
+    public static int[] getRow(int[] thisRow, int[][] matrixBrev) {
+        
+    	int matrixSize = matrixBrev.length;
+    	int[] columnret = new int[matrixSize];
+    	for (int r = 0; r < matrixSize; r++) {          
+           int sum = 0;
+           for (int k = 0; k < matrixSize; k++) {
+              sum += thisRow[k] * matrixBrev[r][k];
+           }
+           columnret[r] = sum;
+       }
+    return columnret;
+}        
+    
+    
     public static int[][] streamMultiply(int[][] matrixA, int[][] matrixB) {
 
 
