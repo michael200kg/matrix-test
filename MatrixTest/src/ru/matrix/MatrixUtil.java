@@ -3,6 +3,7 @@ package ru.matrix;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.*;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 public class MatrixUtil {
@@ -13,9 +14,7 @@ public class MatrixUtil {
 
     public static int[][] stream1Multiply(int[][] matrixA, int[][] matrixB) {
 
-
         final int matrixSize = matrixA.length;
-        int[][] matrixC = new int[matrixSize][matrixSize];
         final int[][] matrixBrev = new int[matrixSize][matrixSize];
 
         for (int r = 0; r < matrixSize; r++) {          
@@ -23,15 +22,11 @@ public class MatrixUtil {
               matrixBrev[k][r] = matrixB[r][k];
            }
         }    
-            
-        Object[] matrixCtest = Arrays.stream(matrixA).parallel().map(arr->{return getRow(arr,matrixBrev);}).toArray();
-        for(int i=0;i<matrixSize;i++) {
-        	matrixC[i] = (int[])matrixCtest[i];
-        }
-        return matrixC;
 
+        return Arrays.stream(matrixA).parallel().map(arr->getRow(arr,matrixBrev)).toArray(int[][]::new);
 
-    }      
+    }   
+    
     public static int[] getRow(int[] thisRow, int[][] matrixBrev) {
         
     	int matrixSize = matrixBrev.length;
