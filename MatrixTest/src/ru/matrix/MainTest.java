@@ -14,6 +14,13 @@ public class MainTest {
     	int[][] c = MatrixUtil.singleThreadMultiply(a, b);
     	Duration duration = Duration.between(time,LocalDateTime.now());
         System.out.println("Duration single thread = "+duration.toMillis());
+      
+    	time = LocalDateTime.now();   	
+    	int[][] f = MatrixUtil.stream1Multiply(a, b);
+    	duration = Duration.between(time,LocalDateTime.now());
+        System.out.println("Duration stream1 = "+duration.toMillis());       
+    
+        System.out.println("Equals = "+MatrixUtil.compare(c, f));             
         
     	time = LocalDateTime.now();   	
     	int[][] d = MatrixUtil.multiThreadMultiply(a, b);
@@ -21,20 +28,15 @@ public class MainTest {
         System.out.println("Duration multi thread = "+duration.toMillis());       
     
         System.out.println("Equals = "+MatrixUtil.compare(c, d));
- 
+ /*
     	time = LocalDateTime.now();   	
     	int[][] e = MatrixUtil.streamMultiply(a, b);
     	duration = Duration.between(time,LocalDateTime.now());
         System.out.println("Duration stream = "+duration.toMillis());       
     
         System.out.println("Equals = "+MatrixUtil.compare(c, e));             
-        
-    	time = LocalDateTime.now();   	
-    	int[][] f = MatrixUtil.stream1Multiply(a, b);
-    	duration = Duration.between(time,LocalDateTime.now());
-        System.out.println("Duration stream1 = "+duration.toMillis());       
-    
-        System.out.println("Equals = "+MatrixUtil.compare(c, f));               
+ */       
+          
 /*    	
         for(int i=0;i<a.length;i++) {
         	for(int j=0;j<a.length;j++) {

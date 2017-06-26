@@ -44,7 +44,6 @@ public class MatrixUtil {
     
     public static int[][] streamMultiply(int[][] matrixA, int[][] matrixB) {
 
-
          final int matrixSize = matrixA.length;
          final int[][] matrixC = new int[matrixSize][matrixSize];
          final int[][] matrixBrev = new int[matrixSize][matrixSize];
@@ -79,10 +78,11 @@ public class MatrixUtil {
     
     
     public static int[][] multiThreadMultiply(int[][] matrixA, int[][] matrixB) {
+        
+    	final int matrixSize = matrixA.length;
+        
+    	ExecutorService executor = Executors.newWorkStealingPool();
 
-        ExecutorService executor = Executors.newWorkStealingPool(30);
-
-        final int matrixSize = matrixA.length;
         final int[][] matrixC = new int[matrixSize][matrixSize];
         final int[][] matrixBrev = new int[matrixSize][matrixSize];
         
